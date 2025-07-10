@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>TOPIK 연습 시험</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    h1 { text-align: center; }
+    .question { margin-bottom: 20px; }
+    .choices input { margin-right: 5px; }
+    .timer { font-size: 20px; color: red; text-align: right; }
+    audio { display: block; margin-top: 10px; }
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>TOPIK 연습 시험</h1>
+  <div class="timer" id="timer">50:00</div>
+
+  <form id="quizForm">
+    <h2>읽기 (Reading)</h2>
+
+    <!-- Sample reading question -->
+    <div class="question">
+      <p>1. 다음 중 가장 알맞은 것을 고르십시오.</p>
+      <div class="choices">
+        <label><input type="radio" name="q1" value="1"> 학교</label><br>
+        <label><input type="radio" name="q1" value="2"> 사과</label><br>
+        <label><input type="radio" name="q1" value="3"> 텔레비전</label><br>
+        <label><input type="radio" name="q1" value="4"> 날씨</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>2. 빈칸에 알맞은 말을 고르십시오.<br>
+        저는 아침에 ________ 마십니다.</p>
+      <div class="choices">
+        <label><input type="radio" name="q2" value="1"> 물을</label><br>
+        <label><input type="radio" name="q2" value="2"> 집에</label><br>
+        <label><input type="radio" name="q2" value="3"> 나무를</label><br>
+        <label><input type="radio" name="q2" value="4"> 책을</label>
+      </div>
+    </div>
+
+    <!-- ... Continue until question 20 ... -->
+
+    <h2>듣기 (Listening)</h2>
+
+    <!-- Sample listening question -->
+    <div class="question">
+      <p>21. 녹음을 듣고 질문에 답하십시오.</p>
+      <audio controls>
+        <source src="audio/sample1.mp3" type="audio/mp3">
+        오디오를 지원하지 않는 브라우저입니다.
+      </audio>
+      <div class="choices">
+        <label><input type="radio" name="q21" value="1"> 시장에 갔습니다</label><br>
+        <label><input type="radio" name="q21" value="2"> 학교에 갔습니다</label><br>
+        <label><input type="radio" name="q21" value="3"> 병원에 갔습니다</label><br>
+        <label><input type="radio" name="q21" value="4"> 공원에 갔습니다</label>
+      </div>
+    </div>
+
+    <div class="question">
+      <p>22. 녹음을 듣고 알맞은 것을 고르십시오.</p>
+      <audio controls>
+        <source src="audio/sample2.mp3" type="audio/mp3">
+        오디오를 지원하지 않는 브라우저입니다.
+      </audio>
+      <div class="choices">
+        <label><input type="radio" name="q22" value="1"> 커피를 마셨습니다</label><br>
+        <label><input type="radio" name="q22" value="2"> 책을 읽었습니다</label><br>
+        <label><input type="radio" name="q22" value="3"> 영화를 봤습니다</label><br>
+        <label><input type="radio" name="q22" value="4"> 음악을 들었습니다</label>
+      </div>
+    </div>
+
+    <!-- ... Continue until question 40 ... -->
+
+    <button type="submit">제출</button>
+  </form>
+
+  <script>
+    // Countdown Timer
+    let time = 50 * 60; // 50 minutes in seconds
+    const timerElement = document.getElementById('timer');
+    const timer = setInterval(() => {
+      const minutes = Math.floor(time / 60);
+      const seconds = time % 60;
+      timerElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+      time--;
+      if (time < 0) {
+        clearInterval(timer);
+        alert("시간이 종료되었습니다. 시험이 자동으로 제출됩니다.");
+        document.getElementById("quizForm").submit();
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
