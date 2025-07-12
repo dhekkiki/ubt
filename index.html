@@ -1,100 +1,81 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>TOPIK 연습 시험</title>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
-    h1 { text-align: center; }
-    .question { margin-bottom: 20px; }
-    .choices input { margin-right: 5px; }
-    .timer { font-size: 20px; color: red; text-align: right; }
-    audio { display: block; margin-top: 10px; }
-    button { padding: 10px 20px; font-size: 16px; }
-  </style>
-</head>
-<body>
-  <h1>TOPIK 연습 시험</h1>
-  <div class="timer" id="timer">50:00</div>
-
-  <form id="quizForm">
-    <h2>읽기 (Reading)</h2>
-
-    <!-- Sample reading question -->
-    <div class="question">
-      <p>1. 다음 중 가장 알맞은 것을 고르십시오.</p>
-      <div class="choices">
-        <label><input type="radio" name="q1" value="1"> 학교</label><br>
-        <label><input type="radio" name="q1" value="2"> 사과</label><br>
-        <label><input type="radio" name="q1" value="3"> 텔레비전</label><br>
-        <label><input type="radio" name="q1" value="4"> 날씨</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>2. 빈칸에 알맞은 말을 고르십시오.<br>
-        저는 아침에 ________ 마십니다.</p>
-      <div class="choices">
-        <label><input type="radio" name="q2" value="1"> 물을</label><br>
-        <label><input type="radio" name="q2" value="2"> 집에</label><br>
-        <label><input type="radio" name="q2" value="3"> 나무를</label><br>
-        <label><input type="radio" name="q2" value="4"> 책을</label>
-      </div>
-    </div>
-
-    <!-- ... Continue until question 20 ... -->
-
-    <h2>듣기 (Listening)</h2>
-
-    <!-- Sample listening question -->
-    <div class="question">
-      <p>21. 녹음을 듣고 질문에 답하십시오.</p>
-      <audio controls>
-        <source src="audio/sample1.mp3" type="audio/mp3">
-        오디오를 지원하지 않는 브라우저입니다.
-      </audio>
-      <div class="choices">
-        <label><input type="radio" name="q21" value="1"> 시장에 갔습니다</label><br>
-        <label><input type="radio" name="q21" value="2"> 학교에 갔습니다</label><br>
-        <label><input type="radio" name="q21" value="3"> 병원에 갔습니다</label><br>
-        <label><input type="radio" name="q21" value="4"> 공원에 갔습니다</label>
-      </div>
-    </div>
-
-    <div class="question">
-      <p>22. 녹음을 듣고 알맞은 것을 고르십시오.</p>
-      <audio controls>
-        <source src="audio/sample2.mp3" type="audio/mp3">
-        오디오를 지원하지 않는 브라우저입니다.
-      </audio>
-      <div class="choices">
-        <label><input type="radio" name="q22" value="1"> 커피를 마셨습니다</label><br>
-        <label><input type="radio" name="q22" value="2"> 책을 읽었습니다</label><br>
-        <label><input type="radio" name="q22" value="3"> 영화를 봤습니다</label><br>
-        <label><input type="radio" name="q22" value="4"> 음악을 들었습니다</label>
-      </div>
-    </div>
-
-    <!-- ... Continue until question 40 ... -->
-
-    <button type="submit">제출</button>
-  </form>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tryout EPS-TOPIK</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script>
-    // Countdown Timer
-    let time = 50 * 60; // 50 minutes in seconds
-    const timerElement = document.getElementById('timer');
-    const timer = setInterval(() => {
-      const minutes = Math.floor(time / 60);
-      const seconds = time % 60;
-      timerElement.textContent = `${minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
-      time--;
-      if (time < 0) {
-        clearInterval(timer);
-        alert("시간이 종료되었습니다. 시험이 자동으로 제출됩니다.");
-        document.getElementById("quizForm").submit();
+    let currentQuestion = 0;
+    let score = 0;
+    let timerInterval;
+    let timeRemaining = 3000;
+
+    const questions = [
+      { number: 1, type: '읽기', question: '마트에서 우유를 샀는데 집에 와서 보니까 우유가 상했습니다. 그래서 마트에 전화를 해서 [  ].', options: ['친구에게 전화를 했어요.', '환불을 요청했어요.', '우유를 마셨어요.', '물을 끓였어요.'], answer: 1 },
+      { number: 2, type: '읽기', question: '매주 수요일은 정기휴일입니다. 이용에 착오 없으시기 바랍니다. 무엇에 대한 안내입니까?', options: ['공원', '가게', '병원', '도서관'], answer: 1 }
+    ];
+
+    function formatTime(seconds) {
+      const min = Math.floor(seconds / 60);
+      const sec = seconds % 60;
+      return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+    }
+
+    function updateTimer() {
+      const timerEl = document.getElementById('timer');
+      if (timeRemaining <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('quiz-container').innerHTML = `<div class='text-xl font-bold text-center text-red-600'>시간 종료! 점수: ${score}/${questions.length}</div>`;
+      } else {
+        timerEl.textContent = formatTime(timeRemaining);
+        timeRemaining--;
       }
-    }, 1000);
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('q-number').textContent = `${q.number}. (${q.type})`;
+      document.getElementById('q-text').textContent = q.question;
+      const optionsContainer = document.getElementById('q-options');
+      optionsContainer.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = `${i + 1}. ${opt}`;
+        btn.className = 'block w-full text-left p-2 border rounded mb-2 hover:bg-blue-100';
+        btn.onclick = () => {
+          if (i === q.answer) score++;
+          currentQuestion++;
+          if (currentQuestion < questions.length) {
+            renderQuestion();
+          } else {
+            clearInterval(timerInterval);
+            document.getElementById('quiz-container').innerHTML = `<div class='text-xl font-bold text-center text-green-600'>시험 종료! 점수: ${score}/${questions.length}</div>`;
+          }
+        };
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    window.onload = () => {
+      renderQuestion();
+      updateTimer();
+      timerInterval = setInterval(updateTimer, 1000);
+    };
   </script>
+</head>
+<body class="bg-gray-100 min-h-screen p-4">
+  <header class="text-center text-2xl font-bold text-blue-700 mb-4">EPS-TOPIK Tryout</header>
+  <div class="text-center text-red-600 font-semibold text-lg mb-4">남은 시간: <span id="timer">50:00</span></div>
+  <main class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
+    <div id="quiz-container">
+      <div class="mb-4">
+        <div id="q-number" class="text-lg font-semibold"></div>
+        <div id="q-text" class="my-4"></div>
+        <div id="q-options"></div>
+      </div>
+    </div>
+  </main>
 </body>
 </html>
