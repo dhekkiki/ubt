@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>EPS-TOPIK Latihan Ujian</title>
@@ -20,7 +19,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>EPS-TOPIK 리단구 연습</h1>
+    <h1>EPS-TOPIK Tryout 1 - Reading</h1>
     <div class="timer">50:00</div>
     <div class="soal">
       <div id="nomor">1 / 40</div>
@@ -33,14 +32,65 @@
     </div>
     <div class="nomor-boxes" id="daftarNomor"></div>
     <div class="hasil" id="hasil"></div>
-  </div>
-
-  <script>
-    const soal = Array.from({ length: 40 }, (_, i) => ({
-      pertanyaan: `수문 ${i + 1} 답한을 고르세요`,
-      pilihan: ["선택1", "선택2", "선택3", "선택4"],
-      jawaban: i % 4
-    }));
+  </div>  <script>
+    const soal = [
+      {
+        pertanyaan: "1. 날씨가 너무 더워서 냉방을 하려고 합니다. 그래서 내일 __________을/를 사러 전자상가에 갑니다.",
+        pilihan: ["난로", "에어컨", "환풍기", "보일러"],
+        jawaban: 1
+      },
+      {
+        pertanyaan: "2. 어제 산 바지가 좀 작아서 교환하려고 갔는데. 그런 바지가 모두 팔려서 __________을/를 받고 집에 돌아왔습니다.",
+        pilihan: ["교환", "예금", "환불", "환전"],
+        jawaban: 2
+      },
+      {
+        pertanyaan: "3. 다른 사람이 쓴 물건을 사면 가격이 __________ 쌉니다. 중고 가게에서는 그런 물건들이 팝니다.",
+        pilihan: ["제발", "엄청", "확실히", "설마"],
+        jawaban: 1
+      },
+      {
+        pertanyaan: "4. 주문한 음식을 다 먹은 후 빈 그릇은 대개 비닐봉지등에 싸서 내놓으면 __________.",
+        pilihan: ["포장해 줍니다.", "수거해 갑니다.", "배달해 줍니다.", "팔아 줍니다."],
+        jawaban: 1
+      },
+      {
+        pertanyaan: "5. 이 표지는 무슨 뜻입니까?",
+        pilihan: ["‘독성 위험’ 조심하세요", "‘폭발 위험’ 조심하세요", "‘감전 위험’ 조심하세요", "‘저온 위험’ 조심하세요"],
+        jawaban: 1
+      },
+      {
+        pertanyaan: "6. 다음 안내문의 설명으로 맞는 것은 무엇입니까?",
+        pilihan: ["주야간 근무를 해야 합니다.", "주말에도 일을 해야 합니다.", "이력서는 이메일로 보냅니다.", "연장 근무도 해야 합니다."],
+        jawaban: 0
+      },
+      {
+        pertanyaan: "7. 다음 그래프에 맞는 것은 고르십시오.",
+        pilihan: [
+          "인건비를 줄이기 위해서 쓰는 비율이 1위로 많다.",
+          "국내 근로자를 얻기 못해서 쓰는 비율이 반 이상입니다.",
+          "지시를 잘 따른다는 의미로 쓰는 비율이 제일 적다.",
+          "긴 시간 일 시킬 수 있어서 쓰는 비율이 제일 많다."
+        ],
+        jawaban: 2
+      },
+      {
+        pertanyaan: "8. 이 사람의 지위는 무엇입니까?",
+        pilihan: ["박성현입니다.", "공장장입니다.", "태성입니다.", "전문가입니다."],
+        jawaban: 1
+      },
+      {
+        pertanyaan: "9. 가: 교통사고를 당한 적이 있어요? 나: 어렸을 때 차에 __________ 뻔한 적이 있어요.",
+        pilihan: ["떨어질", "끼일", "부딪힐", "감길"],
+        jawaban: 0
+      },
+      {
+        pertanyaan: "10. 저는 일요일마다 외국인력지원센터에 갑니다. 그곳에 __________ 한국어도 배우고 친구들도 사귈 수 있습니다.",
+        pilihan: ["가리", "가면", "가지만", "가도록"],
+        jawaban: 3
+      },
+      // Tambahkan soal 11–20 dengan pola serupa jika diperlukan
+    ];
 
     let nomor = 0;
     let jawaban = Array(soal.length).fill(null);
@@ -113,10 +163,8 @@
       }, 1000);
     }
 
-    // Inisialisasi
     tampilkanSoal();
     updateNomorBox();
     mulaiTimer();
-  </script>
-</body>
+  </script></body>
 </html>
