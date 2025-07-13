@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>EPS-TOPIK Latihan Ujian</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .container { max-width: 600px; margin: auto; }
+    h1 { text-align: center; }
+    .soal { margin-top: 20px; }
+    .pilihan { margin: 10px 0; }
+    .navigasi, .hasil { margin-top: 20px; text-align: center; }
+    .timer { text-align: right; font-weight: bold; color: red; }
+    .nomor-boxes { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px; }
+    .nomor-box { width: 30px; height: 30px; text-align: center; line-height: 30px; border-radius: 4px; cursor: pointer; }
+    .belum { background: #eee; }
+    .sudah { background: #00aaff; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>EPS-TOPIK 리단구 연습</h1>
+    <div class="timer">50:00</div>
+    <div class="soal">
+      <div id="nomor">1 / 40</div>
+      <p id="pertanyaan">Loading...</p>
+      <div id="pilihan"></div>
+    </div>
+    <div class="navigasi">
+      <button onclick="sebelumnya()">Sebelumnya</button>
+      <button onclick="selanjutnya()">Selanjutnya</button>
+    </div>
+    <div class="nomor-boxes" id="daftarNomor"></div>
+    <div class="hasil" id="hasil"></div>
+  </div>
+
+  <script>
+    const soal = Array.from({ length: 40 }, (_, i) => ({
+      pertanyaan: `수문 ${i + 1} 답한을 고르세요`,
+      pilihan: ["선택1", "선택2", "선택3", "선택4"],
+      jawaban: i % 4
+    }));
+
+    let nomor = 0;
+    let jawaban = Array(soal.length).fill(null);
+
+    const timerEl = document.querySelector(".timer");
+    const pertanyaanEl = document.getElementById("pertanyaan");
+    const pilihanEl = document.getElementById("pilihan");
+    const nomorEl = document.getElementById("nomor");
+    const hasilEl = document.getElementById("hasil");
+    const daftarNomorEl = document.getElementById("daftarNomor");
+
+    function tampilkanSoal() {
+      const s = soal[nomor];
+      nomorEl.textContent = `${nomor + 1} / ${soal.length}`;
+      pertanyaanEl.textContent = s.pertanyaan;
+      pilihanEl.innerHTML = s.pilihan.map((p, i) => `
+        <div class="pilihan">
+          <label>
+            <input type="radio" name="opsi" value="${i}" ${jawaban[nomor] == i ? "checked" : ""}
+              onchange="jawab(${i})"> ${p}
+          </label>
+        </div>
+      `).join("");
+    }
+
+    function jawab(index) {
+      jawaban[nomor] = index;
+      updateNomorBox();
+    }
+
+    function selanjutnya() {
+      if (nomor < soal.length - 1) nomor++;
+      tampilkanSoal();
+    }
+
+    function sebelumnya() {
+      if (nomor > 0) nomor--;
+      tampilkanSoal();
+    }
+
+    function updateNomorBox() {
+      daftarNomorEl.innerHTML = soal.map((_, i) => `
+        <div class="nomor-box ${jawaban[i] != null ? "sudah" : "belum"}" onclick="keSoal(${i})">${i + 1}</div>
+      `).join("");
+    }
+
+    function keSoal(i) {
+      nomor = i;
+      tampilkanSoal();
+    }
+
+    function selesaiUjian() {
+      let skor = 0;
+      soal.forEach((s, i) => {
+        if (jawaban[i] == s.jawaban) skor++;
+      });
+      hasilEl.innerHTML = `<h3>Hasil Ujian</h3><p>Skor Anda: ${skor} / ${soal.length}</p>`;
+    }
+
+    function mulaiTimer() {
+      let waktu = 50 * 60;
+      const interval = setInterval(() => {
+        const m = Math.floor(waktu / 60);
+        const d = waktu % 60;
+        timerEl.textContent = `${m.toString().padStart(2, '0')}:${d.toString().padStart(2, '0')}`;
+        if (--waktu < 0) {
+          clearInterval(interval);
+          selesaiUjian();
+        }
+      }, 1000);
+    }
+
+    // Inisialisasi
+    tampilkanSoal();
+    updateNomorBox();
+    mulaiTimer();
+  </script>
+</body>
+</html>
