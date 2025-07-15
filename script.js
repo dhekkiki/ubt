@@ -6,7 +6,7 @@ let answers = {};
 const tryoutNo = localStorage.getItem("tryoutNo") || "1";
 
 // Fetch soal dari file JSON
-fetch(`soal/tryout${tryoutNo}.json`)
+fetch(`tryout${no}.json`)
   .then(res => res.json())
   .then(json => {
     data = json;
