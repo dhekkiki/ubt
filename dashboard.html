@@ -34,13 +34,10 @@
   <div id="list"></div>
 
   <script>
-    const name = localStorage.getItem("username");
-    if (!name) {
-      // jika belum login, kembalikan ke halaman login
+    // Jika tidak login, kembali ke halaman login
+    if (!localStorage.getItem("username")) {
       location.href = "login.html";
     }
-
-    document.getElementById("name").innerText = name;
 
     const list = document.getElementById("list");
     for (let i = 1; i <= 25; i++) {
