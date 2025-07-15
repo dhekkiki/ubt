@@ -1,81 +1,54 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f8f9fa;
+  font-family: Arial;
   margin: 0;
-  padding: 0;
-}
-
-#login-page, #dashboard, #tryout-page, #question-view {
   padding: 20px;
+  background: #f5f5f5;
 }
-
-input {
-  padding: 10px;
-  margin: 10px 0;
-  width: 100%;
-  max-width: 300px;
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
-button {
-  padding: 10px 15px;
-  background: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin: 5px;
-}
-
 .avatar {
   width: 50px;
   height: 50px;
-  border-radius: 50%;
+  border-radius: 25px;
 }
-
-.tabs button {
-  margin: 0 5px;
+.timer {
+  font-weight: bold;
+  font-size: 20px;
 }
-
-.question-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+#submitBtn {
+  background: crimson;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
 }
-
-.question-grid div {
+.navigation-tabs button {
+  margin-right: 5px;
+}
+.question-numbers {
+  margin-top: 20px;
+}
+.question-numbers button {
   width: 30px;
   height: 30px;
+  margin: 2px;
+  border: none;
+  border-radius: 4px;
   background: white;
-  border: 1px solid #ccc;
-  text-align: center;
-  line-height: 30px;
   cursor: pointer;
 }
-
-.question-grid .answered {
+.question-numbers button.answered {
   background: lightblue;
 }
-
-.tryout-header, .nav-buttons {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
+.question-area {
+  margin-top: 20px;
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
 }
-
-#choices label {
-  display: block;
-  margin: 10px 0;
-  cursor: pointer;
-}
-
-.choice {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
-
-.choice.selected {
-  background-color: lightblue;
+.nav-buttons {
+  margin-top: 10px;
 }
