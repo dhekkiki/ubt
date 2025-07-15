@@ -8,15 +8,19 @@
     .question-box { display: none; }
     .active { display: block; }
     .answered { background: #007bff; color: white; }
-    .nav-button { margin: 2px; padding: 5px 10px; }
+    .nav-button {
+      margin: 2px;
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      background: white;
+    }
     .number-box { margin-bottom: 10px; }
     button { margin: 5px 0; }
   </style>
 </head>
 <body>
-  <h2>Tryout 문제</h2>
+  <h2>Tryout</h2>
   <div>이름: <span id="name"></span> | 남은 시간: <span id="timer">50:00</span></div>
-  <hr>
   <div class="number-box" id="nav"></div>
   <div id="quiz-container"></div>
   <button onclick="submitAnswers()">제출</button>
