@@ -2,17 +2,92 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>Latihan TOPIK</title>
-  <link rel="stylesheet" href="style.css">
+  <title>UBT Tryout</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .question-box { display: none; }
+    .active { display: block; }
+    .answered { background: #007bff; color: white; }
+    .nav-button { margin: 2px; padding: 5px 10px; }
+    .number-box { margin-bottom: 10px; }
+    button { margin: 5px 0; }
+  </style>
 </head>
 <body>
-  <div id="app">
-    <div id="timer">50:00</div>
-    <div id="soal-container"></div>
-    <div id="options"></div>
-    <button id="next-btn" onclick="nextSoal()">Soal Berikutnya</button>
-  </div>
+  <h2>Tryout 문제</h2>
+  <div>이름: <span id="name"></span> | 남은 시간: <span id="timer">50:00</span></div>
+  <hr>
+  <div class="number-box" id="nav"></div>
+  <div id="quiz-container"></div>
+  <button onclick="submitAnswers()">제출</button>
 
-  <script src="script.js"></script>
+  <script>
+    let data = [], answers = {}, current = 0;
+    const container = document.getElementById('quiz-container');
+    const timerDisplay = document.getElementById('timer');
+    const set = new URLSearchParams(location.search).get("set") || "tryout1";
+    document.getElementById("name").innerText = localStorage.getItem("username") || "";
+
+    async function load() {
+      const res = await fetch(`soal/${set}.json`);
+      data = await res.json();
+      render();
+      buildNav();
+      startTimer(50*60);
+    }
+
+    function render() {
+      container.innerHTML = "";
+      data.forEach((q, i) => {
+        const box = document.createElement("div");
+        box.className = "question-box" + (i === current ? " active" : "");
+        const t = document.createElement("p");
+        t.innerHTML = `<strong>${i+1}. </strong>${q.question}`;
+        box.appendChild(t);
+        q.choices.forEach((c, j) => {
+          const b = document.createElement("button");
+          b.textContent = c.text;
+          if (answers[i] === j) b.classList.add("answered");
+          b.onclick = () => { answers[i] = j; render(); buildNav(); };
+          box.appendChild(b);
+        });
+        container.appendChild(box);
+      });
+    }
+
+    function buildNav() {
+      const nav = document.getElementById("nav");
+      nav.innerHTML = "";
+      for (let i = 0; i < data.length; i++) {
+        const b = document.createElement("button");
+        b.textContent = i + 1;
+        b.className = "nav-button";
+        if (answers[i] !== undefined) b.classList.add("answered");
+        b.onclick = () => { current = i; render(); };
+        nav.appendChild(b);
+      }
+    }
+
+    function submitAnswers() {
+      let correct = 0;
+      data.forEach((q, i) => {
+        if (answers[i] === q.answer) correct++;
+      });
+      alert(`정답 수: ${correct} / ${data.length}`);
+    }
+
+    function startTimer(seconds) {
+      function update() {
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        timerDisplay.innerText = `${min}:${sec.toString().padStart(2, '0')}`;
+        if (seconds-- > 0) setTimeout(update, 1000);
+        else submitAnswers();
+      }
+      update();
+    }
+
+    load();
+  </script>
 </body>
 </html>
