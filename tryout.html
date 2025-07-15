@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tryout UBT</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="header">
+    <img src="avatar.png" alt="Profile" class="avatar" />
+    <div>
+      <h2>Tryout UBT 01</h2>
+      <p>Peserta: <span id="participant">user001</span></p>
+    </div>
+    <div class="timer" id="timer">50:00</div>
+    <button id="submitBtn">Submit</button>
+  </div>
+
+  <div class="navigation-tabs">
+    <button onclick="showAll()">All</button>
+    <button onclick="showSolved()">Solved</button>
+    <button onclick="showUnsolved()">Unsolved</button>
+  </div>
+
+  <div class="question-numbers" id="questionNumbers"></div>
+
+  <div class="question-area" id="questionArea">
+    <div id="questionText"></div>
+    <ul id="optionsList"></ul>
+    <div class="nav-buttons">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
