@@ -1,29 +1,63 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>Login - UBT</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Tryout UBT</title>
   <style>
-    body { font-family: sans-serif; padding: 40px; max-width: 400px; margin: auto; }
-    input, button { width: 100%; padding: 10px; margin: 10px 0; }
-    button { background: #28a745; color: white; border: none; }
+    body {
+      font-family: Arial;
+      background: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+    .login-box input {
+      display: block;
+      margin-bottom: 15px;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h2>UBT 로그인</h2>
-  <input type="text" id="username" placeholder="아이디">
-  <input type="password" id="password" placeholder="비밀번호">
-  <button onclick="login()">로그인</button>
-  <p id="error" style="color:red;"></p>
+  <div class="login-box">
+    <h2>Login Tryout UBT</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="login()">Login</button>
+  </div>
+
   <script>
     function login() {
-      const u = document.getElementById('username').value.trim();
-      const p = document.getElementById('password').value.trim();
-      if (u === "vvip" && p === "000") {
-        localStorage.setItem("username", u);
-        location.href = "dashboard.html";
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      if (user === "vvip" && pass === "000") {
+        localStorage.setItem("ubtUser", user);
+        window.location.href = "dashboard.html";
       } else {
-        document.getElementById("error").innerText = "아이디 또는 비밀번호가 틀렸습니다.";
+        alert("Login gagal. Username: vvip, Password: 000");
       }
     }
   </script>
