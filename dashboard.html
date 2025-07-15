@@ -1,51 +1,57 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tryout UBT</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial;
       padding: 20px;
-      max-width: 600px;
-      margin: auto;
+      background: #f9f9f9;
     }
     h2 {
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
-    .tryout-button {
-      display: inline-block;
-      padding: 10px 20px;
-      margin: 8px;
-      background-color: #007bff;
-      color: white;
-      text-decoration: none;
-      border-radius: 6px;
-      font-size: 16px;
-      transition: background 0.2s;
+    .tryout-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
     }
-    .tryout-button:hover {
-      background-color: #0056b3;
+    .tryout-item {
+      width: 100px;
+      height: 100px;
+      background: white;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
-  <h2>Tryout UBT</h2>
-  <div id="list"></div>
+  <h2>Selamat datang, <span id="username"></span></h2>
+  <p>Pilih Tryout:</p>
+  <div class="tryout-list" id="tryoutList"></div>
 
   <script>
-    // Jika tidak login, kembali ke halaman login
-    if (!localStorage.getItem("username")) {
-      location.href = "login.html";
-    }
+    const user = localStorage.getItem("ubtUser");
+    if (!user) window.location.href = "login.html";
+    document.getElementById("username").innerText = user;
 
-    const list = document.getElementById("list");
+    const list = document.getElementById("tryoutList");
     for (let i = 1; i <= 25; i++) {
-      const a = document.createElement("a");
-      a.href = `index.html?set=tryout${i}`;
-      a.className = "tryout-button";
-      a.innerText = `Tryout ${i}`;
-      list.appendChild(a);
+      const item = document.createElement("div");
+      item.className = "tryout-item";
+      item.innerText = "Tryout " + i;
+      item.onclick = () => {
+        localStorage.setItem("tryoutNo", i);
+        window.location.href = "tryout.html";
+      };
+      list.appendChild(item);
     }
   </script>
 </body>
