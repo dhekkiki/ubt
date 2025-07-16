@@ -1,61 +1,65 @@
-let soalData = [];
-let jawabanUser = {};
+let soal = [];
+let jawaban = {};
+let timer;
 
-function loadSoal() {
-  fetch("soal/tryout1.json")
-    .then(res => res.json())
-    .then(data => {
-      soalData = data;
-      tampilkanSoal(1);
-      buatNavigasi();
-    })
-    .catch(err => {
-      document.getElementById("soal-container").innerHTML = "<p>❌ Soal tidak ditemukan.</p>";
-    });
-}
+window.onload = async function() {
+  const params = new URLSearchParams(window.location.search);
+  const set = params.get("set") || "1";
+  document.getElementById("tryout-id").textContent = set;
 
-function tampilkanSoal(nomor) {
-  const soal = soalData.find(s => s.nomor === nomor);
-  if (!soal) return;
+  try {
+    const res = await fetch(`soal/tryout${set}.json`);
+    soal = await res.json();
+    tampilSoal();
+    mulaiTimer(50 * 60); // 50 menit
+  } catch (err) {
+    document.getElementById("soal-container").innerHTML = "Gagal memuat soal.";
+  }
+};
 
-  let opsiHTML = "";
-  soal.opsi.forEach((opsi, i) => {
-    const checked = jawabanUser[nomor] === i ? "checked" : "";
-    opsiHTML += `
-      <label>
-        <input type="radio" name="soal${nomor}" value="${i}" ${checked}
-          onclick="simpanJawaban(${nomor}, ${i})" />
-        ${opsi}
-      </label><br>`;
+function tampilSoal() {
+  const container = document.getElementById("soal-container");
+  container.innerHTML = "";
+
+  soal.forEach((item, i) => {
+    const nomor = i + 1;
+    const pilihan = item.pilihan.map((p, j) => {
+      const abjad = ["A", "B", "C", "D"][j];
+      const checked = jawaban[nomor] === abjad ? "class='terpilih'" : "";
+      return `<button onclick="pilih(${nomor}, '${abjad}', this)" ${checked}>${abjad}. ${p}</button>`;
+    }).join("<br>");
+
+    container.innerHTML += `
+      <div class="soal-box">
+        <h3>${nomor}. ${item.pertanyaan}</h3>
+        ${pilihan}
+      </div>
+    `;
   });
-
-  document.getElementById("soal-container").innerHTML = `
-    <h2>문제 ${soal.nomor}</h2>
-    <p>${soal.teks}</p>
-    <div>${opsiHTML}</div>
-  `;
 }
 
-function simpanJawaban(nomor, jawaban) {
-  jawabanUser[nomor] = jawaban;
-  const btn = document.getElementById(`btn-${nomor}`);
-  if (btn) btn.classList.add("answered");
+function pilih(nomor, abjad, btn) {
+  jawaban[nomor] = abjad;
+  const buttons = btn.parentElement.querySelectorAll("button");
+  buttons.forEach(b => b.classList.remove("terpilih"));
+  btn.classList.add("terpilih");
 }
 
-function buatNavigasi() {
-  const nav = document.getElementById("nav-buttons");
-  nav.innerHTML = "";
-  soalData.forEach((soal) => {
-    const btn = document.createElement("button");
-    btn.innerText = soal.nomor;
-    btn.id = `btn-${soal.nomor}`;
-    btn.onclick = () => tampilkanSoal(soal.nomor);
-    if (jawabanUser[soal.nomor] !== undefined) {
-      btn.classList.add("answered");
+function mulaiTimer(detik) {
+  const display = document.getElementById("timer");
+  timer = setInterval(() => {
+    let m = Math.floor(detik / 60);
+    let s = detik % 60;
+    display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    if (--detik < 0) {
+      clearInterval(timer);
+      submitJawaban();
     }
-    nav.appendChild(btn);
-  });
+  }, 1000);
 }
 
-// Panggil saat halaman dimuat
-window.onload = loadSoal;
+function submitJawaban() {
+  clearInterval(timer);
+  localStorage.setItem("hasilTryout", JSON.stringify(jawaban));
+  window.location.href = "result.html";
+}
