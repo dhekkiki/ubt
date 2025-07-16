@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hasil Akhir</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h2>Hasil Akhir</h2>
+  <div id="summary"></div>
+
+  <script>
+    const tryout = JSON.parse(localStorage.getItem("hasilTryout")) || {};
+    const buta = localStorage.getItem("hasilButaWarna");
+
+    let benar = 0;
+    for (let k in tryout) if (tryout[k]) benar++;
+
+    document.getElementById("summary").innerHTML = `
+      <p>Jumlah soal dijawab: ${Object.keys(tryout).length}</p>
+      <p>Perkiraan skor tryout: ${benar}</p>
+      <p>Skor tes buta warna: ${buta} / 6</p>
+    `;
+  </script>
+</body>
+</html>
