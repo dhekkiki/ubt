@@ -1,27 +1,26 @@
 let currentQuestion = 0;
 let soal = [];
-let jawabanUser = Array(40).fill(null); // Menyimpan jawaban A/B/C/D
-let timerDuration = 50 * 60; // 50 menit dalam detik
+let jawabanUser = Array(40).fill(null);
+let timerDuration = 50 * 60;
 
-// Ambil set dari URL (default 1)
+// Ambil tryout set dari query string
 const urlParams = new URLSearchParams(window.location.search);
 const set = urlParams.get("set") || "1";
 
-// Fetch soal dari file JSON
+// Ambil soal dari file JSON
 fetch(`soal/tryout${set}.json`)
-  .then((res) => res.json())
-  .then((data) => {
+  .then(res => res.json())
+  .then(data => {
     soal = data;
     renderQuestionNumbers();
     renderQuestion(currentQuestion);
     startTimer();
   })
-  .catch((err) => {
+  .catch(err => {
     document.getElementById("questionText").textContent = "Gagal memuat soal.";
     console.error(err);
   });
 
-// Fungsi menampilkan pertanyaan
 function renderQuestion(index) {
   const q = soal[index];
   document.getElementById("questionText").textContent = `${index + 1}. ${q.pertanyaan}`;
@@ -36,14 +35,12 @@ function renderQuestion(index) {
   });
 }
 
-// Fungsi memilih jawaban
 function selectAnswer(index, opt) {
   jawabanUser[index] = opt;
   updateQuestionBox(index);
   renderQuestion(index);
 }
 
-// Fungsi render kotak soal 1–40
 function renderQuestionNumbers() {
   const box = document.getElementById("questionNumbers");
   box.innerHTML = "";
@@ -60,7 +57,6 @@ function renderQuestionNumbers() {
   }
 }
 
-// Update warna kotak soal setelah menjawab
 function updateQuestionBox(index) {
   const btn = document.getElementById(`qnum${index}`);
   if (jawabanUser[index]) {
@@ -70,7 +66,6 @@ function updateQuestionBox(index) {
   }
 }
 
-// Tombol navigasi
 function nextQuestion() {
   if (currentQuestion < soal.length - 1) {
     currentQuestion++;
@@ -85,14 +80,11 @@ function prevQuestion() {
   }
 }
 
-// Submit jawaban
 document.getElementById("submitBtn").onclick = function () {
   const hasil = jawabanUser.map((j, i) => `${i + 1}. ${j || "-"}`).join("\n");
   alert("Jawaban Anda:\n\n" + hasil);
-  // Bisa diarahkan ke result.html atau disimpan
 };
 
-// Timer countdown
 function startTimer() {
   const timer = document.getElementById("timer");
   let interval = setInterval(() => {
@@ -108,10 +100,10 @@ function startTimer() {
   }, 1000);
 }
 
-// Filter tombol (All, Solved, Unsolved)
 function showAll() {
   renderQuestionNumbers();
 }
+
 function showSolved() {
   const box = document.getElementById("questionNumbers");
   box.innerHTML = "";
@@ -129,6 +121,7 @@ function showSolved() {
     }
   }
 }
+
 function showUnsolved() {
   const box = document.getElementById("questionNumbers");
   box.innerHTML = "";
