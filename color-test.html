@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tes Buta Warna</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h2>Tes Buta Warna</h2>
+  <div id="color-test-container"></div>
+  <button onclick="lanjut()">Simpan & Lihat Hasil</button>
+
+  <script>
+    const data = [
+      { img: "soal/color1.png", kunci: "12" },
+      { img: "soal/color2.png", kunci: "8" },
+      { img: "soal/color3.png", kunci: "6" },
+      { img: "soal/color4.png", kunci: "29" },
+      { img: "soal/color5.png", kunci: "45" },
+      { img: "soal/color6.png", kunci: "5" }
+    ];
+
+    const container = document.getElementById("color-test-container");
+
+    data.forEach((d, i) => {
+      container.innerHTML += `
+        <div>
+          <img src="${d.img}" width="150"><br>
+          <input placeholder="Jawaban gambar ${i + 1}" id="j${i}">
+        </div>
+        <hr>
+      `;
+    });
+
+    function lanjut() {
+      let benar = 0;
+      data.forEach((d, i) => {
+        const isi = document.getElementById(`j${i}`).value;
+        if (isi.trim() === d.kunci) benar++;
+      });
+      localStorage.setItem("hasilButaWarna", benar);
+      window.location.href = "final-result.html";
+    }
+  </script>
+</body>
+</html>
