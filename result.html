@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hasil Tryout</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <h2>Hasil Tryout</h2>
+  <div id="hasil"></div>
+  <button onclick="window.location.href='color-test.html'">Lanjut Tes Buta Warna</button>
+  <script>
+    const data = JSON.parse(localStorage.getItem("hasilTryout")) || {};
+    let benar = 0;
+    for (let k in data) {
+      if (data[k]) benar++;
+    }
+    document.getElementById("hasil").innerText = `Jawaban Diisi: ${Object.keys(data).length} / 40\\nSkor Awal: ${benar}`;
+  </script>
+</body>
+</html>
