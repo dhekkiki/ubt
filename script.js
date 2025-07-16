@@ -1,114 +1,147 @@
 let currentQuestion = 0;
-let data = [];
-let answers = {};
+let soal = [];
+let jawabanUser = Array(40).fill(null); // Menyimpan jawaban A/B/C/D
+let timerDuration = 50 * 60; // 50 menit dalam detik
 
-// Ambil nomor tryout dari localStorage, default 1
-const tryoutNo = localStorage.getItem("tryoutNo") || "1";
+// Ambil set dari URL (default 1)
+const urlParams = new URLSearchParams(window.location.search);
+const set = urlParams.get("set") || "1";
 
 // Fetch soal dari file JSON
-fetch(`tryout${no}.json`)
-  .then(res => res.json())
-  .then(json => {
-    data = json;
+fetch(`soal/tryout${set}.json`)
+  .then((res) => res.json())
+  .then((data) => {
+    soal = data;
     renderQuestionNumbers();
-    loadQuestion(currentQuestion);
+    renderQuestion(currentQuestion);
     startTimer();
+  })
+  .catch((err) => {
+    document.getElementById("questionText").textContent = "Gagal memuat soal.";
+    console.error(err);
   });
 
-// Tampilkan nomor-nomor soal
-function renderQuestionNumbers() {
-  const container = document.getElementById('questionNumbers');
-  container.innerHTML = '';
-  data.forEach((q, i) => {
-    const btn = document.createElement('button');
-    btn.textContent = q.number;
-    btn.onclick = () => {
-      currentQuestion = i;
-      loadQuestion(i);
-    };
-    btn.id = 'qbtn-' + i;
-    if (answers[q.number]) {
-      btn.classList.add('answered');
-    }
-    container.appendChild(btn);
-  });
-}
-
-// Tampilkan soal ke layar
-function loadQuestion(index) {
-  const q = data[index];
-  document.getElementById('questionText').innerText = `${q.number}. ${q.question}`;
-  const list = document.getElementById('optionsList');
-  list.innerHTML = '';
-  q.options.forEach((opt, i) => {
-    const li = document.createElement('li');
-    const btn = document.createElement('button');
-    btn.textContent = opt;
-    btn.onclick = () => {
-      answers[q.number] = i + 1;
-      document.getElementById('qbtn-' + index).classList.add('answered');
-      renderQuestionNumbers();
-    };
-    li.appendChild(btn);
+// Fungsi menampilkan pertanyaan
+function renderQuestion(index) {
+  const q = soal[index];
+  document.getElementById("questionText").textContent = `${index + 1}. ${q.pertanyaan}`;
+  const list = document.getElementById("optionsList");
+  list.innerHTML = "";
+  ["A", "B", "C", "D"].forEach((opt, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${opt}. ${q.pilihan[i]}`;
+    li.onclick = () => selectAnswer(index, opt);
+    if (jawabanUser[index] === opt) li.classList.add("selected");
     list.appendChild(li);
   });
 }
 
-// Navigasi
+// Fungsi memilih jawaban
+function selectAnswer(index, opt) {
+  jawabanUser[index] = opt;
+  updateQuestionBox(index);
+  renderQuestion(index);
+}
+
+// Fungsi render kotak soal 1–40
+function renderQuestionNumbers() {
+  const box = document.getElementById("questionNumbers");
+  box.innerHTML = "";
+  for (let i = 0; i < soal.length; i++) {
+    const btn = document.createElement("button");
+    btn.textContent = i + 1;
+    btn.id = `qnum${i}`;
+    btn.onclick = () => {
+      currentQuestion = i;
+      renderQuestion(i);
+    };
+    if (jawabanUser[i]) btn.classList.add("answered");
+    box.appendChild(btn);
+  }
+}
+
+// Update warna kotak soal setelah menjawab
+function updateQuestionBox(index) {
+  const btn = document.getElementById(`qnum${index}`);
+  if (jawabanUser[index]) {
+    btn.classList.add("answered");
+  } else {
+    btn.classList.remove("answered");
+  }
+}
+
+// Tombol navigasi
+function nextQuestion() {
+  if (currentQuestion < soal.length - 1) {
+    currentQuestion++;
+    renderQuestion(currentQuestion);
+  }
+}
+
 function prevQuestion() {
   if (currentQuestion > 0) {
     currentQuestion--;
-    loadQuestion(currentQuestion);
+    renderQuestion(currentQuestion);
   }
 }
 
-function nextQuestion() {
-  if (currentQuestion < data.length - 1) {
-    currentQuestion++;
-    loadQuestion(currentQuestion);
-  }
-}
+// Submit jawaban
+document.getElementById("submitBtn").onclick = function () {
+  const hasil = jawabanUser.map((j, i) => `${i + 1}. ${j || "-"}`).join("\n");
+  alert("Jawaban Anda:\n\n" + hasil);
+  // Bisa diarahkan ke result.html atau disimpan
+};
 
-// Tab: All / Solved / Unsolved
-function showAll() {
-  document.querySelectorAll('.question-numbers button').forEach(b => b.style.display = 'inline-block');
-}
-function showSolved() {
-  document.querySelectorAll('.question-numbers button').forEach(b => {
-    b.style.display = b.classList.contains('answered') ? 'inline-block' : 'none';
-  });
-}
-function showUnsolved() {
-  document.querySelectorAll('.question-numbers button').forEach(b => {
-    b.style.display = b.classList.contains('answered') ? 'none' : 'inline-block';
-  });
-}
-
-// Timer 50 menit
+// Timer countdown
 function startTimer() {
-  let time = 50 * 60;
-  const timerEl = document.getElementById('timer');
-  const interval = setInterval(() => {
-    const min = String(Math.floor(time / 60)).padStart(2, '0');
-    const sec = String(time % 60).padStart(2, '0');
-    timerEl.textContent = `${min}:${sec}`;
-    if (--time < 0) {
+  const timer = document.getElementById("timer");
+  let interval = setInterval(() => {
+    let m = Math.floor(timerDuration / 60);
+    let s = timerDuration % 60;
+    timer.textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+    if (timerDuration <= 0) {
       clearInterval(interval);
-      alert("Waktu habis! Jawaban akan disubmit.");
-      submitAnswers();
+      alert("Waktu habis! Jawaban akan dikumpulkan.");
+      document.getElementById("submitBtn").click();
     }
+    timerDuration--;
   }, 1000);
 }
 
-// Tombol submit
-document.getElementById('submitBtn').onclick = () => {
-  const confirmSubmit = confirm("Apakah kamu yakin ingin submit jawaban?");
-  if (confirmSubmit) submitAnswers();
-};
-
-function submitAnswers() {
-  let total = data.length;
-  let answered = Object.keys(answers).length;
-  alert(`Jawaban disimpan.\nSoal dijawab: ${answered}/${total}`);
-  // Di sini kamu bisa kirim ke server kalau perlu
+// Filter tombol (All, Solved, Unsolved)
+function showAll() {
+  renderQuestionNumbers();
+}
+function showSolved() {
+  const box = document.getElementById("questionNumbers");
+  box.innerHTML = "";
+  for (let i = 0; i < soal.length; i++) {
+    if (jawabanUser[i]) {
+      const btn = document.createElement("button");
+      btn.textContent = i + 1;
+      btn.id = `qnum${i}`;
+      btn.classList.add("answered");
+      btn.onclick = () => {
+        currentQuestion = i;
+        renderQuestion(i);
+      };
+      box.appendChild(btn);
+    }
+  }
+}
+function showUnsolved() {
+  const box = document.getElementById("questionNumbers");
+  box.innerHTML = "";
+  for (let i = 0; i < soal.length; i++) {
+    if (!jawabanUser[i]) {
+      const btn = document.createElement("button");
+      btn.textContent = i + 1;
+      btn.id = `qnum${i}`;
+      btn.onclick = () => {
+        currentQuestion = i;
+        renderQuestion(i);
+      };
+      box.appendChild(btn);
+    }
+  }
 }
