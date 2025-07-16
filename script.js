@@ -23,12 +23,12 @@ fetch(`soal/tryout${set}.json`)
 
 function renderQuestion(index) {
   const q = soal[index];
-  document.getElementById("questionText").textContent = `${index + 1}. ${q.pertanyaan}`;
+  document.getElementById("questionText").textContent = `${index + 1}. ${q.question}`;
   const list = document.getElementById("optionsList");
   list.innerHTML = "";
   ["A", "B", "C", "D"].forEach((opt, i) => {
     const li = document.createElement("li");
-    li.textContent = `${opt}. ${q.pilihan[i]}`;
+    li.textContent = `${opt}. ${q.options[i]}`;
     li.onclick = () => selectAnswer(index, opt);
     if (jawabanUser[index] === opt) li.classList.add("selected");
     list.appendChild(li);
